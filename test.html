@@ -3,106 +3,453 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Billiards Timer - Test Calculations</title>
+    <title>Billiards Timer Pro - Comprehensive Tests</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .test-result { margin: 10px 0; padding: 10px; border-radius: 5px; }
-        .pass { background-color: #d4edda; color: #155724; }
-        .fail { background-color: #f8d7da; color: #721c24; }
+        body { 
+            font-family: 'Inter', Arial, sans-serif; 
+            padding: 20px; 
+            background: #f8fafc;
+            color: #1e293b;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .test-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .test-result { 
+            margin: 16px 0; 
+            padding: 16px; 
+            border-radius: 8px; 
+            border-left: 4px solid;
+        }
+        .pass { 
+            background-color: #dcfce7; 
+            color: #166534;
+            border-left-color: #10b981;
+        }
+        .fail { 
+            background-color: #fef2f2; 
+            color: #dc2626;
+            border-left-color: #ef4444;
+        }
+        .summary {
+            font-size: 1.25rem;
+            font-weight: 700;
+            padding: 20px;
+            text-align: center;
+            border-radius: 12px;
+            margin-top: 24px;
+        }
+        .test-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+        .stat-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+        .performance-test {
+            margin-top: 16px;
+            padding: 12px;
+            background: #f1f5f9;
+            border-radius: 6px;
+            font-family: monospace;
+        }
+        h1 {
+            color: #1e40af;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        h2 {
+            color: #1e40af;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
     </style>
 </head>
 <body>
-    <h1>🎱 Billiards Timer - Calculation Tests</h1>
-    <div id="testResults"></div>
+    <div class="container">
+        <h1>🎱 Billiards Timer Pro - Comprehensive Test Suite</h1>
+        
+        <div class="test-stats" id="testStats">
+            <!-- Stats will be populated by JavaScript -->
+        </div>
+        
+        <div class="test-section">
+            <h2>💰 Cost Calculation Tests</h2>
+            <div id="costTests"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🔄 Rounding & Service Fee Tests</h2>
+            <div id="roundingTests"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🌐 Currency Formatting Tests</h2>
+            <div id="currencyTests"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>⏱️ Time Formatting Tests</h2>
+            <div id="timeTests"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🧮 Precision Tests</h2>
+            <div id="precisionTests"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>⚡ Performance Tests</h2>
+            <div id="performanceTests"></div>
+        </div>
+        
+        <div id="testSummary"></div>
+    </div>
 
     <script>
-        // Test the calculation logic
-        function calculateCost(milliseconds, hourlyRate) {
-            const hours = milliseconds / (1000 * 60 * 60); // Convert ms to hours
-            return Math.round(hourlyRate * hours);
-        }
-
-        function formatCurrency(amount) {
-            return `${amount.toLocaleString('vi-VN')} VND`;
-        }
-
-        function runTests() {
-            const tests = [
-                {
-                    name: "30 minutes at 29,000 VND/hour",
-                    milliseconds: 30 * 60 * 1000, // 30 minutes
-                    hourlyRate: 29000,
-                    expected: 14500
-                },
-                {
-                    name: "1 hour at 29,000 VND/hour",
-                    milliseconds: 60 * 60 * 1000, // 1 hour
-                    hourlyRate: 29000,
-                    expected: 29000
-                },
-                {
-                    name: "1.5 hours at 29,000 VND/hour",
-                    milliseconds: 90 * 60 * 1000, // 1.5 hours
-                    hourlyRate: 29000,
-                    expected: 43500
-                },
-                {
-                    name: "15 minutes at 20,000 VND/hour",
-                    milliseconds: 15 * 60 * 1000, // 15 minutes
-                    hourlyRate: 20000,
-                    expected: 5000
-                },
-                {
-                    name: "2 hours at 35,000 VND/hour",
-                    milliseconds: 120 * 60 * 1000, // 2 hours
-                    hourlyRate: 35000,
-                    expected: 70000
-                },
-                {
-                    name: "10 minutes at 30,000 VND/hour",
-                    milliseconds: 10 * 60 * 1000, // 10 minutes
-                    hourlyRate: 30000,
-                    expected: 5000
-                }
-            ];
-
-            const resultsDiv = document.getElementById('testResults');
-            let allPassed = true;
-
-            tests.forEach(test => {
-                const result = calculateCost(test.milliseconds, test.hourlyRate);
-                const passed = result === test.expected;
+        // Mock BilliardsApp for testing
+        class TestBilliardsApp {
+            constructor() {
+                this.settings = {
+                    roundingMinutes: 1,
+                    serviceFee: 0,
+                    currency: 'VND'
+                };
+            }
+            
+            calculateCost(milliseconds, hourlyRate) {
+                const hours = milliseconds / (1000 * 60 * 60);
+                const baseCost = hourlyRate * hours;
                 
-                if (!passed) allPassed = false;
+                // Apply rounding
+                const roundingMinutes = parseInt(this.settings.roundingMinutes || 1);
+                if (roundingMinutes > 1) {
+                    const minutes = milliseconds / (1000 * 60);
+                    const roundedMinutes = Math.ceil(minutes / roundingMinutes) * roundingMinutes;
+                    const roundedHours = roundedMinutes / 60;
+                    const roundedCost = hourlyRate * roundedHours;
+                    
+                    // Apply service fee
+                    const serviceFee = this.settings.serviceFee || 0;
+                    return Math.round(roundedCost * (1 + serviceFee / 100));
+                }
+                
+                // Apply service fee
+                const serviceFee = this.settings.serviceFee || 0;
+                return Math.round(baseCost * (1 + serviceFee / 100));
+            }
+            
+            formatCurrency(amount) {
+                const currency = this.settings.currency || 'VND';
+                
+                if (currency === 'VND') {
+                    return new Intl.NumberFormat('vi-VN').format(amount) + ' ₫';
+                } else if (currency === 'USD') {
+                    return new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'USD'
+                    }).format(amount / 23000);
+                }
+                
+                return amount.toLocaleString() + ' ' + currency;
+            }
+            
+            formatTime(milliseconds) {
+                const totalSeconds = Math.floor(milliseconds / 1000);
+                const hours = Math.floor(totalSeconds / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const seconds = totalSeconds % 60;
 
-                const resultDiv = document.createElement('div');
-                resultDiv.className = `test-result ${passed ? 'pass' : 'fail'}`;
-                resultDiv.innerHTML = `
-                    <strong>${test.name}</strong><br>
-                    Expected: ${formatCurrency(test.expected)}<br>
-                    Got: ${formatCurrency(result)}<br>
-                    Status: ${passed ? '✅ PASS' : '❌ FAIL'}
-                `;
-                resultsDiv.appendChild(resultDiv);
-            });
-
-            // Summary
-            const summaryDiv = document.createElement('div');
-            summaryDiv.className = `test-result ${allPassed ? 'pass' : 'fail'}`;
-            summaryDiv.innerHTML = `
-                <strong>Summary: ${allPassed ? '✅ All tests passed!' : '❌ Some tests failed'}</strong>
-            `;
-            resultsDiv.appendChild(summaryDiv);
-
-            console.log('Test Results:', tests.map(test => ({
-                ...test,
-                result: calculateCost(test.milliseconds, test.hourlyRate),
-                passed: calculateCost(test.milliseconds, test.hourlyRate) === test.expected
-            })));
+                return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
         }
-
+        
+        // Test runner
+        class TestRunner {
+            constructor() {
+                this.app = new TestBilliardsApp();
+                this.totalTests = 0;
+                this.passedTests = 0;
+                this.failedTests = 0;
+                this.results = [];
+            }
+            
+            runTest(testName, testFn, expected) {
+                this.totalTests++;
+                try {
+                    const result = testFn();
+                    const passed = this.compareResults(result, expected);
+                    
+                    if (passed) {
+                        this.passedTests++;
+                    } else {
+                        this.failedTests++;
+                    }
+                    
+                    this.results.push({
+                        name: testName,
+                        expected,
+                        result,
+                        passed,
+                        error: null
+                    });
+                } catch (error) {
+                    this.failedTests++;
+                    this.results.push({
+                        name: testName,
+                        expected,
+                        result: null,
+                        passed: false,
+                        error: error.message
+                    });
+                }
+            }
+            
+            compareResults(result, expected) {
+                if (typeof expected === 'number') {
+                    return Math.abs(result - expected) < 1; // Allow 1 unit tolerance
+                }
+                return result === expected;
+            }
+            
+            displayResults(containerId, sectionResults) {
+                const container = document.getElementById(containerId);
+                
+                sectionResults.forEach(test => {
+                    const resultDiv = document.createElement('div');
+                    resultDiv.className = `test-result ${test.passed ? 'pass' : 'fail'}`;
+                    
+                    let resultText = '';
+                    if (test.error) {
+                        resultText = `Error: ${test.error}`;
+                    } else {
+                        resultText = `Expected: ${test.expected}<br>Got: ${test.result}`;
+                    }
+                    
+                    resultDiv.innerHTML = `
+                        <strong>${test.name}</strong><br>
+                        ${resultText}<br>
+                        Status: ${test.passed ? '✅ PASS' : '❌ FAIL'}
+                    `;
+                    container.appendChild(resultDiv);
+                });
+            }
+            
+            runAllTests() {
+                // Basic Cost Calculation Tests
+                this.runTest('30 minutes at 29,000 VND/h', () => {
+                    return this.app.calculateCost(30 * 60 * 1000, 29000);
+                }, 14500);
+                
+                this.runTest('1 hour at 29,000 VND/h', () => {
+                    return this.app.calculateCost(60 * 60 * 1000, 29000);
+                }, 29000);
+                
+                this.runTest('1.5 hours at 29,000 VND/h', () => {
+                    return this.app.calculateCost(90 * 60 * 1000, 29000);
+                }, 43500);
+                
+                this.runTest('15 minutes at 20,000 VND/h', () => {
+                    return this.app.calculateCost(15 * 60 * 1000, 20000);
+                }, 5000);
+                
+                this.runTest('2 hours at 35,000 VND/h', () => {
+                    return this.app.calculateCost(120 * 60 * 1000, 35000);
+                }, 70000);
+                
+                this.runTest('7 minutes at 30,000 VND/h', () => {
+                    return this.app.calculateCost(7 * 60 * 1000, 30000);
+                }, 3500);
+                
+                const costResults = this.results.slice(0, 6);
+                this.displayResults('costTests', costResults);
+                
+                // Rounding Tests
+                this.app.settings.roundingMinutes = 5;
+                this.runTest('7 minutes rounded to 5min at 30,000 VND/h', () => {
+                    return this.app.calculateCost(7 * 60 * 1000, 30000);
+                }, 7500); // Rounds up to 15 minutes
+                
+                this.runTest('12 minutes rounded to 5min at 30,000 VND/h', () => {
+                    return this.app.calculateCost(12 * 60 * 1000, 30000);
+                }, 7500); // Rounds up to 15 minutes
+                
+                this.app.settings.roundingMinutes = 10;
+                this.runTest('25 minutes rounded to 10min at 24,000 VND/h', () => {
+                    return this.app.calculateCost(25 * 60 * 1000, 24000);
+                }, 12000); // Rounds up to 30 minutes
+                
+                // Service Fee Tests
+                this.app.settings.roundingMinutes = 1;
+                this.app.settings.serviceFee = 10;
+                this.runTest('30 minutes with 10% service fee', () => {
+                    return this.app.calculateCost(30 * 60 * 1000, 29000);
+                }, 15950); // 14500 + 10%
+                
+                this.app.settings.serviceFee = 0; // Reset
+                
+                const roundingResults = this.results.slice(6, 10);
+                this.displayResults('roundingTests', roundingResults);
+                
+                // Currency Formatting Tests
+                this.runTest('VND formatting 29000', () => {
+                    return this.app.formatCurrency(29000);
+                }, '29.000 ₫');
+                
+                this.app.settings.currency = 'USD';
+                this.runTest('USD formatting (approximation)', () => {
+                    const result = this.app.formatCurrency(23000);
+                    return result.includes('$1.00');
+                }, true);
+                
+                this.app.settings.currency = 'VND'; // Reset
+                
+                const currencyResults = this.results.slice(10, 12);
+                this.displayResults('currencyTests', currencyResults);
+                
+                // Time Formatting Tests
+                this.runTest('Format 30 minutes', () => {
+                    return this.app.formatTime(30 * 60 * 1000);
+                }, '00:30:00');
+                
+                this.runTest('Format 1.5 hours', () => {
+                    return this.app.formatTime(90 * 60 * 1000);
+                }, '01:30:00');
+                
+                this.runTest('Format 2:15:30', () => {
+                    return this.app.formatTime((2 * 3600 + 15 * 60 + 30) * 1000);
+                }, '02:15:30');
+                
+                const timeResults = this.results.slice(12, 15);
+                this.displayResults('timeTests', timeResults);
+                
+                // Precision Tests (very small times)
+                this.runTest('1 second precision', () => {
+                    return this.app.calculateCost(1000, 36000); // 36k VND/h = 10 VND/s
+                }, 10);
+                
+                this.runTest('Sub-second precision', () => {
+                    return this.app.calculateCost(500, 36000); // 0.5 seconds
+                }, 5);
+                
+                const precisionResults = this.results.slice(15, 17);
+                this.displayResults('precisionTests', precisionResults);
+                
+                // Performance Tests
+                this.runPerformanceTests();
+                
+                // Display summary
+                this.displaySummary();
+                this.displayStats();
+            }
+            
+            runPerformanceTests() {
+                const container = document.getElementById('performanceTests');
+                
+                // Test calculation performance
+                const iterations = 10000;
+                const start = performance.now();
+                
+                for (let i = 0; i < iterations; i++) {
+                    this.app.calculateCost(Math.random() * 3600000, 29000);
+                }
+                
+                const end = performance.now();
+                const duration = end - start;
+                const opsPerSecond = Math.round(iterations / (duration / 1000));
+                
+                const perfDiv = document.createElement('div');
+                perfDiv.className = 'performance-test';
+                perfDiv.innerHTML = `
+                    <strong>Calculation Performance:</strong><br>
+                    ${iterations} calculations in ${duration.toFixed(2)}ms<br>
+                    ~${opsPerSecond.toLocaleString()} operations/second<br>
+                    Average: ${(duration / iterations).toFixed(4)}ms per calculation
+                `;
+                container.appendChild(perfDiv);
+                
+                // Test memory usage
+                const memoryDiv = document.createElement('div');
+                memoryDiv.className = 'performance-test';
+                if (performance.memory) {
+                    memoryDiv.innerHTML = `
+                        <strong>Memory Usage:</strong><br>
+                        Used: ${(performance.memory.usedJSHeapSize / 1024 / 1024).toFixed(2)} MB<br>
+                        Total: ${(performance.memory.totalJSHeapSize / 1024 / 1024).toFixed(2)} MB<br>
+                        Limit: ${(performance.memory.jsHeapSizeLimit / 1024 / 1024).toFixed(2)} MB
+                    `;
+                } else {
+                    memoryDiv.innerHTML = '<strong>Memory Usage:</strong><br>Not available in this browser';
+                }
+                container.appendChild(memoryDiv);
+            }
+            
+            displayStats() {
+                const statsContainer = document.getElementById('testStats');
+                
+                const stats = [
+                    { label: 'Total Tests', value: this.totalTests },
+                    { label: 'Passed', value: this.passedTests },
+                    { label: 'Failed', value: this.failedTests },
+                    { label: 'Success Rate', value: `${Math.round((this.passedTests / this.totalTests) * 100)}%` }
+                ];
+                
+                stats.forEach(stat => {
+                    const statCard = document.createElement('div');
+                    statCard.className = 'stat-card';
+                    statCard.innerHTML = `
+                        <div class="stat-value">${stat.value}</div>
+                        <div class="stat-label">${stat.label}</div>
+                    `;
+                    statsContainer.appendChild(statCard);
+                });
+            }
+            
+            displaySummary() {
+                const summaryContainer = document.getElementById('testSummary');
+                const allPassed = this.failedTests === 0;
+                
+                summaryContainer.innerHTML = `
+                    <div class="summary ${allPassed ? 'pass' : 'fail'}">
+                        <strong>${allPassed ? '🎉 All Tests Passed!' : '⚠️ Some Tests Failed'}</strong><br>
+                        ${this.passedTests}/${this.totalTests} tests passed
+                        ${!allPassed ? '<br>Check failed tests above for details.' : ''}
+                    </div>
+                `;
+            }
+        }
+        
         // Run tests when page loads
-        document.addEventListener('DOMContentLoaded', runTests);
+        document.addEventListener('DOMContentLoaded', () => {
+            const runner = new TestRunner();
+            runner.runAllTests();
+            
+            console.log('🎱 Billiards Timer Pro - Test Results:');
+            console.table(runner.results);
+        });
     </script>
 </body>
 </html>

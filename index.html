@@ -1,69 +1,195 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Billiards Timer - Track Your Playtime & Cost</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Billiards Timer Pro - AI-Generated Pool Hall Management</title>
+    <meta name="description" content="Professional billiards timer with multi-table support, real-time cost calculation, and smart billing features">
+    <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-spinner"></div>
+        <p data-i18n="loading">Đang tải...</p>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app" class="app" style="display: none;">
+        <!-- Header Navigation -->
         <header class="header">
-            <h1 class="title">🎱 Billiards Timer</h1>
-            <p class="subtitle">Track your playtime and calculate costs in real-time</p>
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">🎱</span>
+                    <h1 class="logo-text" data-i18n="appTitle">Billiards Timer Pro</h1>
+                    <span class="ai-badge" data-i18n="aiBadge">AI-Generated</span>
+                </div>
+                
+                <nav class="nav-controls">
+                    <button class="nav-btn" id="themeToggle" aria-label="Toggle theme">
+                        <span class="theme-icon">🌙</span>
+                    </button>
+                    <button class="nav-btn" id="languageToggle" aria-label="Switch language">
+                        <span class="lang-text">EN</span>
+                    </button>
+                    <button class="nav-btn" id="settingsBtn" aria-label="Settings">
+                        <span>⚙️</span>
+                    </button>
+                </nav>
+            </div>
         </header>
 
-        <!-- Rate Setting -->
-        <div class="rate-section">
-            <label for="hourlyRate" class="rate-label">Hourly Rate (VND)</label>
-            <input type="number" id="hourlyRate" class="rate-input" placeholder="29000" value="29000" min="1">
-        </div>
-
-        <!-- Timer Display -->
-        <div class="timer-section">
-            <div class="timer-display" id="timerDisplay">00:00:00</div>
-            <div class="timer-label">Elapsed Time</div>
-        </div>
-
-        <!-- Cost Display -->
-        <div class="cost-section">
-            <div class="cost-display" id="costDisplay">0 VND</div>
-            <div class="cost-label">Current Cost</div>
-        </div>
-
-        <!-- Control Buttons -->
-        <div class="controls">
-            <button class="btn btn-start" id="startBtn">
-                <span class="btn-icon">▶</span>
-                <span class="btn-text">Start</span>
+        <!-- Quick Actions Bar -->
+        <div class="quick-actions">
+            <button class="quick-btn" id="startAllBtn">
+                <span class="btn-icon">▶️</span>
+                <span data-i18n="startAll">Bắt đầu tất cả</span>
             </button>
-            <button class="btn btn-stop" id="stopBtn" disabled>
-                <span class="btn-icon">⏸</span>
-                <span class="btn-text">Stop</span>
+            <button class="quick-btn" id="pauseAllBtn">
+                <span class="btn-icon">⏸️</span>
+                <span data-i18n="pauseAll">Tạm dừng tất cả</span>
             </button>
-            <button class="btn btn-reset" id="resetBtn">
-                <span class="btn-icon">🔄</span>
-                <span class="btn-text">Reset</span>
+            <button class="quick-btn" id="addTableBtn">
+                <span class="btn-icon">➕</span>
+                <span data-i18n="addTable">Thêm bàn</span>
             </button>
         </div>
 
-        <!-- Session Info -->
-        <div class="session-info">
-            <div class="session-item">
-                <span class="session-label">Status:</span>
-                <span class="session-value" id="statusValue">Ready</span>
+        <!-- Global Summary -->
+        <div class="global-summary">
+            <div class="summary-card">
+                <div class="summary-value" id="totalCost">0 ₫</div>
+                <div class="summary-label" data-i18n="totalCost">Tổng chi phí</div>
             </div>
-            <div class="session-item">
-                <span class="session-label">Rate per Minute:</span>
-                <span class="session-value" id="ratePerMinute">483 VND</span>
+            <div class="summary-card">
+                <div class="summary-value" id="activeTables">0</div>
+                <div class="summary-label" data-i18n="activeTables">Bàn đang chơi</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-value" id="totalTime">00:00:00</div>
+                <div class="summary-label" data-i18n="totalTime">Tổng thời gian</div>
+            </div>
+        </div>
+
+        <!-- Tables Grid -->
+        <div class="tables-container">
+            <div class="tables-grid" id="tablesGrid">
+                <!-- Table cards will be dynamically generated -->
+            </div>
+            
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState">
+                <div class="empty-icon">🎯</div>
+                <h3 data-i18n="noTables">Chưa có bàn nào</h3>
+                <p data-i18n="addFirstTable">Nhấn "Thêm bàn" để bắt đầu</p>
+            </div>
+        </div>
+
+        <!-- Floating Action Button -->
+        <button class="fab" id="fabBtn" aria-label="Quick actions">
+            <span class="fab-icon">⚡</span>
+        </button>
+    </div>
+
+    <!-- Modal Overlays -->
+    <div id="modalOverlay" class="modal-overlay">
+        <!-- Table Settings Modal -->
+        <div id="tableModal" class="modal table-modal">
+            <div class="modal-header">
+                <h2 data-i18n="tableSettings">Cài đặt bàn</h2>
+                <button class="modal-close" id="closeTableModal">&times;</button>
+            </div>
+            <div class="modal-content">
+                <form id="tableForm">
+                    <div class="form-group">
+                        <label for="tableName" data-i18n="tableName">Tên bàn</label>
+                        <input type="text" id="tableName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tableRate" data-i18n="hourlyRate">Giá theo giờ (₫)</label>
+                        <input type="number" id="tableRate" min="1000" step="1000" value="29000" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tableNotes" data-i18n="notes">Ghi chú</label>
+                        <textarea id="tableNotes" rows="3"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancelTableBtn" data-i18n="cancel">Hủy</button>
+                        <button type="submit" class="btn btn-primary" data-i18n="save">Lưu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div id="settingsModal" class="modal settings-modal">
+            <div class="modal-header">
+                <h2 data-i18n="settings">Cài đặt</h2>
+                <button class="modal-close" id="closeSettingsModal">&times;</button>
+            </div>
+            <div class="modal-content">
+                <div class="settings-section">
+                    <h3 data-i18n="billing">Thanh toán</h3>
+                    <div class="form-group">
+                        <label for="roundingMinutes" data-i18n="roundTo">Làm tròn đến</label>
+                        <select id="roundingMinutes">
+                            <option value="1">1 phút</option>
+                            <option value="5">5 phút</option>
+                            <option value="10">10 phút</option>
+                            <option value="15">15 phút</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="serviceFee" data-i18n="serviceFee">Phí dịch vụ (%)</label>
+                        <input type="number" id="serviceFee" min="0" max="50" step="0.5" value="0">
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3 data-i18n="display">Hiển thị</h3>
+                    <div class="form-group">
+                        <label for="currency" data-i18n="currency">Tiền tệ</label>
+                        <select id="currency">
+                            <option value="VND">Vietnamese Dong (₫)</option>
+                            <option value="USD">US Dollar ($)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3 data-i18n="data">Dữ liệu</h3>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="exportHistoryBtn" data-i18n="exportHistory">Xuất lịch sử</button>
+                        <button type="button" class="btn btn-secondary" id="clearHistoryBtn" data-i18n="clearHistory">Xóa lịch sử</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Billing Modal -->
+        <div id="billingModal" class="modal billing-modal">
+            <div class="modal-header">
+                <h2 data-i18n="generateBill">Tạo hóa đơn</h2>
+                <button class="modal-close" id="closeBillingModal">&times;</button>
+            </div>
+            <div class="modal-content" id="billingContent">
+                <!-- Billing content will be generated dynamically -->
             </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Scripts -->
+    <script src="app.js"></script>
+    <script>
+        // Initialize app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            window.billiardsApp = new BilliardsApp();
+        });
+    </script>
 </body>
 </html>
