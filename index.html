@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billiards Timer - Track Your Playtime & Cost</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="title">🎱 Billiards Timer</h1>
+            <p class="subtitle">Track your playtime and calculate costs in real-time</p>
+        </header>
+
+        <!-- Rate Setting -->
+        <div class="rate-section">
+            <label for="hourlyRate" class="rate-label">Hourly Rate (VND)</label>
+            <input type="number" id="hourlyRate" class="rate-input" placeholder="29000" value="29000" min="1">
+        </div>
+
+        <!-- Timer Display -->
+        <div class="timer-section">
+            <div class="timer-display" id="timerDisplay">00:00:00</div>
+            <div class="timer-label">Elapsed Time</div>
+        </div>
+
+        <!-- Cost Display -->
+        <div class="cost-section">
+            <div class="cost-display" id="costDisplay">0 VND</div>
+            <div class="cost-label">Current Cost</div>
+        </div>
+
+        <!-- Control Buttons -->
+        <div class="controls">
+            <button class="btn btn-start" id="startBtn">
+                <span class="btn-icon">▶</span>
+                <span class="btn-text">Start</span>
+            </button>
+            <button class="btn btn-stop" id="stopBtn" disabled>
+                <span class="btn-icon">⏸</span>
+                <span class="btn-text">Stop</span>
+            </button>
+            <button class="btn btn-reset" id="resetBtn">
+                <span class="btn-icon">🔄</span>
+                <span class="btn-text">Reset</span>
+            </button>
+        </div>
+
+        <!-- Session Info -->
+        <div class="session-info">
+            <div class="session-item">
+                <span class="session-label">Status:</span>
+                <span class="session-value" id="statusValue">Ready</span>
+            </div>
+            <div class="session-item">
+                <span class="session-label">Rate per Minute:</span>
+                <span class="session-value" id="ratePerMinute">483 VND</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

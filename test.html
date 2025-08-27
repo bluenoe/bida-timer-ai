@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billiards Timer - Test Calculations</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .pass { background-color: #d4edda; color: #155724; }
+        .fail { background-color: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>🎱 Billiards Timer - Calculation Tests</h1>
+    <div id="testResults"></div>
+
+    <script>
+        // Test the calculation logic
+        function calculateCost(milliseconds, hourlyRate) {
+            const hours = milliseconds / (1000 * 60 * 60); // Convert ms to hours
+            return Math.round(hourlyRate * hours);
+        }
+
+        function formatCurrency(amount) {
+            return `${amount.toLocaleString('vi-VN')} VND`;
+        }
+
+        function runTests() {
+            const tests = [
+                {
+                    name: "30 minutes at 29,000 VND/hour",
+                    milliseconds: 30 * 60 * 1000, // 30 minutes
+                    hourlyRate: 29000,
+                    expected: 14500
+                },
+                {
+                    name: "1 hour at 29,000 VND/hour",
+                    milliseconds: 60 * 60 * 1000, // 1 hour
+                    hourlyRate: 29000,
+                    expected: 29000
+                },
+                {
+                    name: "1.5 hours at 29,000 VND/hour",
+                    milliseconds: 90 * 60 * 1000, // 1.5 hours
+                    hourlyRate: 29000,
+                    expected: 43500
+                },
+                {
+                    name: "15 minutes at 20,000 VND/hour",
+                    milliseconds: 15 * 60 * 1000, // 15 minutes
+                    hourlyRate: 20000,
+                    expected: 5000
+                },
+                {
+                    name: "2 hours at 35,000 VND/hour",
+                    milliseconds: 120 * 60 * 1000, // 2 hours
+                    hourlyRate: 35000,
+                    expected: 70000
+                },
+                {
+                    name: "10 minutes at 30,000 VND/hour",
+                    milliseconds: 10 * 60 * 1000, // 10 minutes
+                    hourlyRate: 30000,
+                    expected: 5000
+                }
+            ];
+
+            const resultsDiv = document.getElementById('testResults');
+            let allPassed = true;
+
+            tests.forEach(test => {
+                const result = calculateCost(test.milliseconds, test.hourlyRate);
+                const passed = result === test.expected;
+                
+                if (!passed) allPassed = false;
+
+                const resultDiv = document.createElement('div');
+                resultDiv.className = `test-result ${passed ? 'pass' : 'fail'}`;
+                resultDiv.innerHTML = `
+                    <strong>${test.name}</strong><br>
+                    Expected: ${formatCurrency(test.expected)}<br>
+                    Got: ${formatCurrency(result)}<br>
+                    Status: ${passed ? '✅ PASS' : '❌ FAIL'}
+                `;
+                resultsDiv.appendChild(resultDiv);
+            });
+
+            // Summary
+            const summaryDiv = document.createElement('div');
+            summaryDiv.className = `test-result ${allPassed ? 'pass' : 'fail'}`;
+            summaryDiv.innerHTML = `
+                <strong>Summary: ${allPassed ? '✅ All tests passed!' : '❌ Some tests failed'}</strong>
+            `;
+            resultsDiv.appendChild(summaryDiv);
+
+            console.log('Test Results:', tests.map(test => ({
+                ...test,
+                result: calculateCost(test.milliseconds, test.hourlyRate),
+                passed: calculateCost(test.milliseconds, test.hourlyRate) === test.expected
+            })));
+        }
+
+        // Run tests when page loads
+        document.addEventListener('DOMContentLoaded', runTests);
+    </script>
+</body>
+</html>
