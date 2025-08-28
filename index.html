@@ -44,35 +44,44 @@
             </div>
         </header>
 
-        <!-- Quick Actions Bar -->
+        <!-- Enhanced Quick Actions Bar -->
         <div class="quick-actions">
-            <button class="quick-btn" id="startAllBtn">
+            <button class="quick-btn" id="startAllBtn" data-tooltip="Start all tables">
                 <span class="btn-icon">▶️</span>
                 <span data-i18n="startAll">Bắt đầu tất cả</span>
+                <div class="btn-ripple"></div>
             </button>
-            <button class="quick-btn" id="pauseAllBtn">
+            <button class="quick-btn" id="pauseAllBtn" data-tooltip="Pause all tables">
                 <span class="btn-icon">⏸️</span>
                 <span data-i18n="pauseAll">Tạm dừng tất cả</span>
+                <div class="btn-ripple"></div>
             </button>
-            <button class="quick-btn" id="addTableBtn">
+            <button class="quick-btn" id="addTableBtn" data-tooltip="Add new table">
                 <span class="btn-icon">➕</span>
                 <span data-i18n="addTable">Thêm bàn</span>
+                <div class="btn-ripple"></div>
             </button>
         </div>
 
-        <!-- Global Summary -->
+        <!-- Enhanced Global Summary -->
         <div class="global-summary">
-            <div class="summary-card">
+            <div class="summary-card" data-tooltip="Total revenue from all tables">
+                <div class="summary-icon">💰</div>
                 <div class="summary-value" id="totalCost">0 ₫</div>
                 <div class="summary-label" data-i18n="totalCost">Tổng chi phí</div>
+                <div class="summary-progress"><div class="progress-bar"></div></div>
             </div>
-            <div class="summary-card">
+            <div class="summary-card" data-tooltip="Number of active gaming tables">
+                <div class="summary-icon">🎱</div>
                 <div class="summary-value" id="activeTables">0</div>
                 <div class="summary-label" data-i18n="activeTables">Bàn đang chơi</div>
+                <div class="summary-progress"><div class="progress-bar"></div></div>
             </div>
-            <div class="summary-card">
+            <div class="summary-card" data-tooltip="Total playing time across all tables">
+                <div class="summary-icon">⏱️</div>
                 <div class="summary-value" id="totalTime">00:00:00</div>
                 <div class="summary-label" data-i18n="totalTime">Tổng thời gian</div>
+                <div class="summary-progress"><div class="progress-bar"></div></div>
             </div>
         </div>
 

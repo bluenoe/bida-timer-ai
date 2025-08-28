@@ -32,9 +32,41 @@ class BilliardsApp {
 
     hideLoadingScreen() {
         setTimeout(() => {
-            document.getElementById('loadingScreen').style.display = 'none';
-            document.getElementById('app').style.display = 'block';
-        }, 1000);
+            const loadingScreen = document.getElementById('loadingScreen');
+            const app = document.getElementById('app');
+            
+            // Fade out loading screen
+            loadingScreen.style.opacity = '0';
+            loadingScreen.style.transform = 'scale(0.9)';
+            
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+                app.style.display = 'block';
+                
+                // Trigger entrance animations
+                this.triggerEntranceAnimations();
+            }, 500);
+        }, 1200); // Increased loading time for better UX
+    }
+    
+    triggerEntranceAnimations() {
+        // Stagger animations for different sections
+        const sections = [
+            '.header',
+            '.quick-actions',
+            '.global-summary',
+            '.tables-container'
+        ];
+        
+        sections.forEach((selector, index) => {
+            const element = document.querySelector(selector);
+            if (element) {
+                setTimeout(() => {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }, index * 150);
+            }
+        });
     }
 
     initializeEventListeners() {
@@ -395,6 +427,7 @@ class BilliardsApp {
         let totalCost = 0;
         let activeTables = 0;
         let totalTime = 0;
+        const maxTables = Math.max(this.tables.size, 1);
 
         this.tables.forEach(table => {
             const currentTime = table.status === 'running' 
@@ -411,9 +444,49 @@ class BilliardsApp {
             }
         });
 
-        document.getElementById('totalCost').textContent = this.formatCurrency(totalCost);
-        document.getElementById('activeTables').textContent = activeTables;
-        document.getElementById('totalTime').textContent = this.formatTime(totalTime);
+        // Update values with smooth number transitions
+        this.animateValue('totalCost', this.formatCurrency(totalCost));
+        this.animateValue('activeTables', activeTables);
+        this.animateValue('totalTime', this.formatTime(totalTime));
+        
+        // Update progress bars
+        this.updateProgressBars(totalCost, activeTables, totalTime, maxTables);
+    }
+
+    animateValue(elementId, newValue) {
+        const element = document.getElementById(elementId);
+        if (!element) return;
+        
+        const currentValue = element.textContent;
+        if (currentValue !== newValue) {
+            element.style.transform = 'scale(1.05)';
+            element.style.transition = 'transform 0.2s ease';
+            
+            setTimeout(() => {
+                element.textContent = newValue;
+                element.style.transform = 'scale(1)';
+            }, 100);
+        }
+    }
+
+    updateProgressBars(totalCost, activeTables, totalTime, maxTables) {
+        // Animate progress bars based on activity
+        const progressBars = document.querySelectorAll('.progress-bar');
+        
+        if (progressBars[0]) {
+            const costProgress = Math.min((totalCost / 100000) * 100, 100); // Max 100k VND for full bar
+            progressBars[0].style.width = `${costProgress}%`;
+        }
+        
+        if (progressBars[1]) {
+            const tableProgress = (activeTables / maxTables) * 100;
+            progressBars[1].style.width = `${tableProgress}%`;
+        }
+        
+        if (progressBars[2]) {
+            const timeProgress = Math.min((totalTime / (1000 * 60 * 60 * 4)) * 100, 100); // Max 4 hours for full bar
+            progressBars[2].style.width = `${timeProgress}%`;
+        }
     }
 
     // ===== MODALS =====
@@ -448,20 +521,63 @@ class BilliardsApp {
     }
 
     openModal(modalId) {
-        document.getElementById('modalOverlay').classList.add('active');
-        document.getElementById(modalId).style.display = 'block';
+        const overlay = document.getElementById('modalOverlay');
+        const modal = document.getElementById(modalId);
+        
+        overlay.classList.add('active');
+        modal.style.display = 'block';
+        
+        // Add escape key listener
+        this.escapeKeyListener = (e) => {
+            if (e.key === 'Escape') {
+                this.closeModal();
+            }
+        };
+        document.addEventListener('keydown', this.escapeKeyListener);
+        
+        // Focus trap for accessibility
+        const focusableElements = modal.querySelectorAll(
+            'button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusableElements.length > 0) {
+            focusableElements[0].focus();
+        }
+        
+        // Animate modal entrance
+        setTimeout(() => {
+            overlay.style.opacity = '1';
+        }, 10);
     }
 
     closeModal(modalId = null) {
-        document.getElementById('modalOverlay').classList.remove('active');
+        const overlay = document.getElementById('modalOverlay');
         
-        if (modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        } else {
-            // Close all modals
-            document.querySelectorAll('.modal').forEach(modal => {
-                modal.style.display = 'none';
-            });
+        // Animate modal exit
+        overlay.style.opacity = '0';
+        
+        setTimeout(() => {
+            overlay.classList.remove('active');
+            
+            if (modalId) {
+                document.getElementById(modalId).style.display = 'none';
+            } else {
+                // Close all modals
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.style.display = 'none';
+                });
+            }
+        }, 300);
+        
+        // Remove escape key listener
+        if (this.escapeKeyListener) {
+            document.removeEventListener('keydown', this.escapeKeyListener);
+            this.escapeKeyListener = null;
+        }
+        
+        // Return focus to previously focused element
+        if (this.previouslyFocused) {
+            this.previouslyFocused.focus();
+            this.previouslyFocused = null;
         }
     }
 
